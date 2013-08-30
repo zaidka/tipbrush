@@ -37,9 +37,7 @@ canvas.addEventListener "mousedown", ((e) ->
 ), false
 
 canvas.addEventListener "mouseup", (->
-  t_r = r
-  t_g = g
-  t_b = b
+  reset_colors
   canvas.removeEventListener "mousemove", onPaint, false
 ), false
 
@@ -55,6 +53,7 @@ canvas.addEventListener "touchstart", ((e) ->
 ), false
 
 canvas.addEventListener "touchend", (->
+  reset_colors
   canvas.removeEventListener "touchmove", onPaint, false
 ), false
 
@@ -71,3 +70,8 @@ get_color = ->
   t_r = t_r + (r2 - t_r) * 0.01
   t_g = t_g + (g2 - t_g) * 0.01
   t_b = t_b + (b2 - t_b) * 0.01
+
+reset_colors = ->
+  t_r = r
+  t_g = g
+  t_b = b  
