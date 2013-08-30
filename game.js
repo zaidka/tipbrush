@@ -13,7 +13,7 @@ height = null;
 
 svg = null;
 
-thickness = 30;
+thickness = 40;
 
 getSample = function(context, x, y) {
   return context.getImageData(x, y, 1, 1).data;
@@ -36,7 +36,7 @@ getCurve = function() {
 };
 
 drawCurve = function(curve, thickness) {
-  var b, c, g, group, l, r, x1, x2, y1, y2, _i, _len, _ref;
+  var b, c, g, group, l, l1, r, x1, x2, y1, y2, _i, _len, _ref;
   c = curve[0];
   x1 = curve[0][0];
   y1 = curve[0][1];
@@ -53,6 +53,12 @@ drawCurve = function(curve, thickness) {
     l.stroke({
       width: thickness,
       color: "rgb(" + r + "," + g + "," + b + ")",
+      opacity: 0.4
+    });
+    l1 = group.line(x1, y1, x2, y2);
+    l1.stroke({
+      width: thickness / 2,
+      color: "rgb(" + r + "," + g + "," + b + ")",
       opacity: 0.8
     });
     x1 = x2;
@@ -65,24 +71,31 @@ init = function(imageUrl) {
   var d, img;
   canvasElement = document.getElementById('canvas');
   imageCanvas = document.getElementById('image');
+  width = $(canvasElement).width();
+  height = $(canvasElement).height();
   context = imageCanvas.getContext('2d');
   img = new Image();
   img.onload = function() {
-    width = img.width;
-    height = img.height;
+    var scale, scaleX, scaleY;
     imageCanvas.width = width;
     imageCanvas.height = height;
-    context.drawImage(img, 0, 0, img.width, img.height);
+    scaleX = width / img.width;
+    scaleY = height / img.height;
+    scale = Math.max(scaleX, scaleY);
+    context.drawImage(img, 0, 0, img.width * scale, img.height * scale);
     return svg = SVG('canvas').size(width, height);
   };
   img.src = imageUrl;
   d = function() {
     var curve, curveData;
-    thickness -= 0.05;
+    thickness -= 0.1;
+    thickness = Math.max(thickness, 10);
     curveData = getCurve();
     return curve = drawCurve(curveData, thickness);
   };
-  return setInterval(d, 100);
+  return setInterval(d, 300);
 };
 
-init('test.jpg');
+$(document).ready(function() {
+  return init('test.jpg');
+});
